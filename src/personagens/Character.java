@@ -5,13 +5,12 @@ import java.io.Serializable;
 public abstract class Character implements Serializable
 {
     protected String nome;
-    protected int pvAtual, pvMax, xpAtual, atk, def;
+    protected int pvAtual, pvMax, xp, atk, def;
 
-    public Character(String nome, int pvAtual, int pvMax, int xp, int atk, int def) {
+    public Character(String nome, int pv, int atk, int def) {
         this.nome = nome;
-        this.pvAtual = pvAtual;
-        this.pvMax = pvMax;
-        this.xpAtual = xp;
+        this.pvAtual = pv;
+        this.pvMax = pv;
         this.atk = atk;
         this.def = def;
     }

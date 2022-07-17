@@ -1,6 +1,6 @@
 package itens;
 
-public class Potion extends Itens
+public class Pocao extends Itens
 {
     /** 
      * 'P': 10,
@@ -8,7 +8,7 @@ public class Potion extends Itens
      * 'G': 60
      * @param tamanho 
      */
-    public Potion(char tamanho) 
+    public Pocao(char tamanho) 
     {
         nome = "Poção";
         quantidade = 0; //A poção possui 3 usos

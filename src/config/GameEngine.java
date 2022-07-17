@@ -3,25 +3,21 @@ package config;
 import java.io.IOException;
 import java.util.Scanner;
 
-import itens.Armor;
-import itens.Backpack;
-import itens.Potion;
-import itens.Weapon;
-import personagens.Hero;
-import personagens.HeroData;
+import personagens.Heroi;
+import personagens.HeroiData;
 
 public class GameEngine 
 {   
-    private static Hero heroi;
-    private static boolean novojogo = true;
-    private static Scanner scanner = new Scanner(System.in);
+    protected static Heroi heroi;
+    protected static boolean novojogo = true;
+    protected static Scanner scanner = new Scanner(System.in);
 
     public static void cabecalho(String titulo, int n_separador) {
         System.out.println("\n ["+titulo+"]");
         separador(n_separador);
     }
 
-    private static void separador(int n) {
+    public static void separador(int n) {
         for (int i = 0; i < n/2; i++) {
             System.out.print("-");
             System.out.print("=");
@@ -80,10 +76,10 @@ public class GameEngine
         return barra;
     }
 
-    public static int opcao(String sinal, int escolhas) {
+    public static int opcao(String comecoLinha, int escolhas) {
         int op_escolhida;
         do {
-            System.out.print(sinal);
+            System.out.print(comecoLinha);
             try {
                 op_escolhida = Integer.parseInt(scanner.next());
             } catch (Exception e) {
@@ -107,6 +103,9 @@ public class GameEngine
         } catch (IOException e) {}
     }
 
+
+
+    
     public static void estagios(int op_escolhida) {
         do {
             switch (op_escolhida) {
@@ -116,7 +115,7 @@ public class GameEngine
                         limparConsole();
                         heroi.adicionarPv(heroi.getPvMax());
                         heroi.encherPotion();
-    
+
                         cabecalho("Fogueira", 6);
                         System.out.println(" \""+heroi.getNome()+" descansa no calor da fogueira. Se recupera");
                         System.out.println(" completamente e, misteriosamente, a poção está cheia\"");
@@ -127,12 +126,12 @@ public class GameEngine
                         if (op1 == 1) {
                             limparConsole();
                             cabecalho("Status & Mochila", 36);
-                            System.out.println(heroi.mostrarPV());
+                            System.out.println(heroi.toStringPV());
                             System.out.println(barraPVXP(heroi.getPvAtual(), heroi.getPvMax())); 
-                            System.out.println(heroi.mostrarXP());
+                            System.out.println(heroi.toStringXP());
                             System.out.println(barraPVXP(heroi.getXpAtual(), heroi.getXpMax())); 
-    
-                            heroi.mostrarMochila();
+                            
+                            System.out.println(heroi.toStringInventario());
                             separador(36);
                             enterContinua();
                         }
@@ -147,7 +146,6 @@ public class GameEngine
             printMenuEstagios();
             op_escolhida = opcao(" > ", 6);
         } while (op_escolhida != 0);
-        
     }
 
     public static void menuSecundario() 
@@ -165,18 +163,19 @@ public class GameEngine
                 case 2:
                     limparConsole();
                     cabecalho("Mochila", 36);
-                    System.out.print(Backpack.mostrarMochila());
+                    
+                    System.out.println(heroi.toStringInventario());
                     separador(36);
                     enterContinua();
                     break;
                 case 3:
                     limparConsole();
                     cabecalho("Dados do Herói", 36);
-                    System.out.println(heroi.mostrarPV());
+                    System.out.println(heroi.toStringPV());
                     System.out.println(barraPVXP(heroi.getPvAtual(), heroi.getPvMax())); 
-                    System.out.println(heroi.mostrarXP());
+                    System.out.println(heroi.toStringXP());
                     System.out.println(barraPVXP(heroi.getXpAtual(), heroi.getXpMax()));
-                    System.out.println(heroi.mostrarAtributos());
+                    System.out.println(heroi.toStringAtributos());
                     enterContinua();
                 default:
                     break;
@@ -186,8 +185,6 @@ public class GameEngine
 
     public static void iniciarJogo() 
     {
-
-
         limparConsole();
         cabecalho("RPG", 40);
         System.out.println(" RPG por Wesley Nascimento e Vitor Hugo\n");
@@ -207,7 +204,7 @@ public class GameEngine
                             limparConsole();
                             cabecalho("Qual é o nome do Herói?", 46);
                             System.out.print("> ");
-                            heroi = new Hero(scanner.next()); 
+                            heroi = new Heroi(scanner.next()); 
                             //heroi = new Heroi("Herói", 5, 10, 2, 7, 1);
 
                             cabecalho("O nome do Herói é "+heroi.getNome()+". Correto?", 46);
@@ -221,7 +218,7 @@ public class GameEngine
                     break;
                 case 2: //Salvar
                     limparConsole();
-                    if(HeroData.salvar(heroi)) 
+                    if(HeroiData.salvar(heroi)) 
                         cabecalho("Dados do Herói salvos!", 36);
                     else 
                         cabecalho("Ocorreu um erro!\n", 36);
@@ -229,14 +226,14 @@ public class GameEngine
                     break;
                 case 3: //Carregar
                     limparConsole();
-                    heroi = HeroData.carregar();
+                    heroi = HeroiData.carregar();
                     if(heroi != null) {
                         cabecalho("Dados do Herói carregados!", 6);
-                        System.out.println(heroi.mostrarPV());
+                        System.out.println(heroi.toStringPV());
                         System.out.println(barraPVXP(heroi.getPvAtual(), heroi.getPvMax())); 
-                        System.out.println(heroi.mostrarXP());
+                        System.out.println(heroi.toStringXP());
                         System.out.println(barraPVXP(heroi.getXpAtual(), heroi.getXpMax()));
-                        System.out.println(heroi.mostrarAtributos());
+                        System.out.println(heroi.toStringAtributos());
                         separador(6);
                         novojogo = false;
                     }

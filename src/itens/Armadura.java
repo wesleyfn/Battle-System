@@ -1,8 +1,8 @@
 package itens;
 
-public class Armor extends Itens
+public class Armadura extends Itens
 {
-    public Armor(String nome, int def) {
+    public Armadura(String nome, int def) {
         this.nome = nome;
         this.quantidade = 1;
         this.atributo = def;
