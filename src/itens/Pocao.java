@@ -30,11 +30,19 @@ public class Pocao extends Itens
     }
 
     public void setQuantidade(int quantidade) {
-        this.quantidade = quantidade;
+        if (quantidade > 3)
+            this.quantidade = 3;
+        else if (quantidade < 1) 
+            this.quantidade = 0;
+        else
+            this.quantidade = quantidade;
     }
 
-    public int usarPotion() {
-        if (quantidade > 0) {
+    @Override
+    public int getAtributo() {
+        if (quantidade == 0) 
+            return 0;
+        else if (quantidade > 0) {
             quantidade--;
         }
         return atributo;
@@ -57,7 +65,7 @@ public class Pocao extends Itens
                 estado = "Vazia";
                 break;
         }
-        return String.format("%s (%s)", nome, estado);
+        return String.format("%s(%s)", nome, estado);
     }
 
 }

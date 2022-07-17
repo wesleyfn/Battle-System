@@ -12,7 +12,7 @@ public class Heroi extends Character
 {
     private int estagioAtual;
     private int xpMax, nivel, distancia;
-    List<Itens> inventario = new ArrayList<Itens>();
+    private List<Itens> inventario = new ArrayList<Itens>();
 
     public Heroi(String nome) {
         this(nome, 10, 1, 1);
@@ -25,6 +25,7 @@ public class Heroi extends Character
         xpMax = 10;
         nivel = 1;
         distancia = 1;
+        estagioAtual = 1;
 
         inventario.add(new Arma("Faca", 2));
         inventario.add(new Armadura("Farrapos", 1));
@@ -34,34 +35,32 @@ public class Heroi extends Character
         this.def += ((Armadura) inventario.get(1)).getDef();
     }
 
-    public int getPvAtual() { return pvAtual; }
-    public int getPvMax() { return pvMax; }
     public int getXpAtual() { return xp; }
     public int getXpMax() { return xpMax; }
-    public String getNome() { return nome; }
+    public int getDistancia() { return distancia; }
     public int getEstagioAtual() { return estagioAtual; }
+    public List<Itens> getInventario() { return inventario; }
 
     public void setEstagioAtual(int estagioAtual) {
         this.estagioAtual = estagioAtual;
     }
 
+    public void reiniciarDistancia() {
+        this.distancia = 0;
+    }
+
     public void adicionarXp(int add) {
         xp += add;
         if (xp >= xpMax) {
-            xp = 0;
+            xp = xp - xpMax;
             xpMax = Math.round(xpMax * 2.2f);
-            pvMax = Math.round(xpMax * 1.5f);
+            pvMax = Math.round(pvMax * 1.5f);
             nivel++;
         }
     }
 
     public void movimentar() {
         distancia++;
-        if (distancia == 10) distancia = 1;
-    }
-
-    public int attack() {
-        return atk;
     }
 
     public void encherPotion() {
@@ -69,9 +68,9 @@ public class Heroi extends Character
     }
 
     public String toStringInventario() {
-        String str = "- "+ ((Arma) inventario.get(0)).toString();
-        str += " - "+ ((Armadura) inventario.get(1)).toString();
-        str += " - "+ ((Pocao) inventario.get(2)).toString()+" -";
+        String str = ((Arma) inventario.get(0)).toString();
+        str += ", "+ ((Armadura) inventario.get(1)).toString();
+        str += ", "+ ((Pocao) inventario.get(2)).toString();
         return str;
     }
 
@@ -90,9 +89,5 @@ public class Heroi extends Character
     //mostra os atributos
     public String toStringAtributos() {
         return " ATK: "+atk+" DEF: "+def;
-    }
-
-    public String toStringStatus() {
-        return toStringPV() + toStringXP() + toStringAtributos();
     }
 }

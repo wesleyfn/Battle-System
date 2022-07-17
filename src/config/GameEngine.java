@@ -5,10 +5,12 @@ import java.util.Scanner;
 
 import personagens.Heroi;
 import personagens.HeroiData;
+import personagens.Inimigo;
 
 public class GameEngine 
 {   
     protected static Heroi heroi;
+    protected static Estagio estagio;
     protected static boolean novojogo = true;
     protected static Scanner scanner = new Scanner(System.in);
 
@@ -27,35 +29,22 @@ public class GameEngine
 
     public static void printMenuPrincipal() 
     {
-        cabecalho("RPG", 40);
-        System.out.format("  1) %s\n", novojogo ? "Novo Jogo" : "Continuar");
-        System.out.println("  2) Salvar");
-        System.out.println("  3) Carregar");
-        System.out.println("  4) Como Jogar");
+        cabecalho("RPG", 6);
+        System.out.format("  1) %s", novojogo ? "Novo Jogo\n" : "Continuar\n");
+        System.out.print("  2) Carregar");
+        System.out.format("%s", novojogo ? "\n" : "\n  3) Salvar\n");
+        System.out.format("  %d) Como Jogar\n", novojogo ? 3 : 4);
         System.out.println("  0) Sair do Jogo");
-        separador(40);
+        separador(6);
     }
 
     public static void printMenuEstagios() 
     {
-        cabecalho("Escolha um estágio (0 = voltar)", 40);
-        System.out.println("  1) Fogueira");
-        System.out.println("  2) Colinas Verdejantes");
-        System.out.println("  3) Floresta Sempre Noturna");
-        System.out.println("  4) Labirinto da Perdição");
-        System.out.println("  5) Deserto Não Verdejante");
-        System.out.println("  6) Caverna Ossos Vívidos");
-        separador(40);
-    }
-
-    public static void printMenuSecundario() 
-    {
-        cabecalho("Derrote seus inimigos, "+heroi.getNome()+"!", 40);
-        System.out.println( "  1) Estágios");
-        System.out.println( "  2) Mochila");
-        System.out.println( "  3) Status");
-        System.out.println( "  0) Voltar");
-        separador(40);
+        cabecalho("Escolha um estágio (0 = voltar)", 6);
+        for (int i = 1; i < 7; i++) {
+            System.out.format("  %d) %s\n", i, estagio.getNome(i));
+        }
+        separador(6);
     }
 
     public static String barraPVXP(int atual, int max) 
@@ -76,6 +65,17 @@ public class GameEngine
         return barra;
     }
 
+    private static void printStatus(String titulo) {
+        cabecalho(titulo, 6);
+        System.out.println(heroi.toStringPV());
+        System.out.println(barraPVXP(heroi.getPvAtual(), heroi.getPvMax())); 
+        System.out.println(heroi.toStringXP());
+        System.out.println(barraPVXP(heroi.getXpAtual(), heroi.getXpMax()));
+        System.out.println(heroi.toStringAtributos());
+        System.out.println("\n"+heroi.toStringInventario());
+        separador(6);
+    }
+
     public static int opcao(String comecoLinha, int escolhas) {
         int op_escolhida;
         do {
@@ -84,7 +84,6 @@ public class GameEngine
                 op_escolhida = Integer.parseInt(scanner.next());
             } catch (Exception e) {
                 op_escolhida = -1;
-                cabecalho("Por favor digite um inteiro!", 40);
             }
         } while (op_escolhida < 0 || op_escolhida > escolhas);
         return op_escolhida;
@@ -102,85 +101,145 @@ public class GameEngine
             System.in.read();
         } catch (IOException e) {}
     }
-
-
-
     
-    public static void estagios(int op_escolhida) {
+    private static void batalha(Inimigo inimigo) {
+        int op;
+        limparConsole();
+        cabecalho(inimigo.getNome()+" aparece!", 6);
         do {
-            switch (op_escolhida) {
-                case 1: //Fogueira
-                    int op1;
-                    do {
-                        limparConsole();
-                        heroi.adicionarPv(heroi.getPvMax());
-                        heroi.encherPotion();
-
-                        cabecalho("Fogueira", 6);
-                        System.out.println(" \""+heroi.getNome()+" descansa no calor da fogueira. Se recupera");
-                        System.out.println(" completamente e, misteriosamente, a poção está cheia\"");
-                        separador(6);
-                        System.out.print(" 1) Status e Mochila\t0) Voltar (Estágios)");
-                        op1 = opcao(": ", 1);
-    
-                        if (op1 == 1) {
-                            limparConsole();
-                            cabecalho("Status & Mochila", 36);
-                            System.out.println(heroi.toStringPV());
-                            System.out.println(barraPVXP(heroi.getPvAtual(), heroi.getPvMax())); 
-                            System.out.println(heroi.toStringXP());
-                            System.out.println(barraPVXP(heroi.getXpAtual(), heroi.getXpMax())); 
-                            
-                            System.out.println(heroi.toStringInventario());
-                            separador(36);
-                            enterContinua();
-                        }
-                    } while (op1 != 0);
-
-                    break;
+            System.out.println(" "+inimigo.getNome());
+            System.out.println(barraPVXP(inimigo.getPvAtual(), inimigo.getPvMax())+"\n");
             
+            System.out.println(heroi.toStringPV());
+            System.out.println(barraPVXP(heroi.getPvAtual(), heroi.getPvMax()));
+            separador(6);
+            System.out.println(" 1) Atacar  2) "+heroi.getInventario().get(2).toString()+"  0) Correr");
+            separador(6);
+            op = opcao(" > ", 2);
+
+            limparConsole();
+            if (op == 1) {
+                int ataqueH = 1 + (int) (Math.random() * heroi.ataque());
+                int ataqueI = 1 + (int) (Math.random() * inimigo.ataque());
+                
+                //configurar turno de ataque (quem ataca primeiro)
+                //condição caso o heroi morra
+                inimigo.adicionarPv(-ataqueH);
+                heroi.adicionarPv(-ataqueI);
+                cabecalho(heroi.getNome()+" causa "+ataqueH+" de dano e recebe "+ataqueI+"!", 6);
+                if (inimigo.getPvAtual() < 1) 
+                    heroi.adicionarXp(inimigo.getXP());
+            }
+            else if (op == 2) {
+                int ataqueI = 1 + (int) (Math.random() * inimigo.ataque());
+                int cura = heroi.getInventario().get(2).getAtributo();
+                if (cura == 0)
+                    cabecalho("Poção vazia!", 6);
+                else {
+                    heroi.adicionarPv(cura);
+                    heroi.adicionarPv(-ataqueI);
+                    cabecalho("Você bebe a poção e recebe "+ataqueI+" de dano!", 6);
+                }
+            }
+        } while (heroi.getPvAtual() > 0 && inimigo.getPvAtual() > 0 && op != 0);
+    }
+    
+    public static void gerarEncontro() {
+        int op;
+        limparConsole();
+        cabecalho("subestagio"+heroi.getDistancia(), 6);
+        do {
+            System.out.println("\""+heroi.getNome()+" encontrou uma criatura. Derrote-a Herói!\"");
+            separador(6);
+            System.out.println(" 1) Lutar  2) Correr");
+            separador(6);
+            op = opcao(" > ", 2);
+
+            String nomeInimigo = estagio.getInimigo((int) (Math.random()*5));
+            if (op == 1) {
+                batalha(new Inimigo(nomeInimigo, 5));
+                enterContinua();
+            } 
+            else if (op == 2) {
+                limparConsole();
+                int moeda = 1 + (int) (Math.random()*2);
+                if (moeda == 1) {
+                    cabecalho("subestagio"+heroi.getDistancia(), 6);
+                    System.out.println("\""+heroi.getNome()+" fugiu covardemente...\"");
+                    separador(6);
+                    enterContinua();
+                }
+                else {
+                    cabecalho("A criatura estava atenta!", 6);
+                    limparConsole();
+                    batalha(new Inimigo(nomeInimigo, 5));
+                }
+            }
+            limparConsole();
+        } while (op != 1 && op != 2);
+    }
+
+    private static void menuEstagio(int estagio_escolhido) {
+        int op;
+        do {
+            limparConsole();
+            estagio = new Estagio(estagio_escolhido, heroi);
+            
+            cabecalho(estagio.getNome(estagio_escolhido), 6);
+            System.out.println(estagio.getDescricao());
+
+            separador(6);
+            System.out.print(" 1) Andar  2) Status&Mochila  0) Voltar (Estágios)");
+            op = opcao(": ", 2);
+
+            if (op == 1) {
+                if (estagio_escolhido == 1) {
+                    limparConsole();
+                    cabecalho(estagio.getNome(estagio_escolhido), 6);
+                    System.out.println(" \""+heroi.getNome()+" anda ao redor da fogueira, por algum motivo.\"");
+                    separador(6);
+                    enterContinua();
+                }
+                else {
+                    heroi.movimentar();
+                    gerarEncontro();
+                    if (heroi.getDistancia() == 5) {
+                        heroi.reiniciarDistancia();
+                        return;
+                    }
+                }
+            }
+            else if (op == 2) {
+                limparConsole();
+                printStatus("Status&Mochila");
+                enterContinua();
+            }
+        } while (op != 0);
+        heroi.setEstagioAtual(estagio_escolhido);
+    }
+
+    public static void localHeroi(int estagio_escolhido) {
+        do {
+            switch (estagio_escolhido) {
+                case 1: //Fogueira
+                    heroi.encherPotion();
+                    heroi.adicionarPv(heroi.getPvMax());
+                    menuEstagio(estagio_escolhido);
+                    break;
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                    menuEstagio(estagio_escolhido);
+                    break;
                 default:
                     break;
             }
             limparConsole();
             printMenuEstagios();
-            op_escolhida = opcao(" > ", 6);
-        } while (op_escolhida != 0);
-    }
-
-    public static void menuSecundario() 
-    {
-        int op;
-        do {
-            limparConsole();
-            printMenuSecundario();
-            op = opcao(" > ",3);
-            switch (op) {
-                case 1:
-                    printMenuEstagios();
-                    estagios(1);
-                    break;
-                case 2:
-                    limparConsole();
-                    cabecalho("Mochila", 36);
-                    
-                    System.out.println(heroi.toStringInventario());
-                    separador(36);
-                    enterContinua();
-                    break;
-                case 3:
-                    limparConsole();
-                    cabecalho("Dados do Herói", 36);
-                    System.out.println(heroi.toStringPV());
-                    System.out.println(barraPVXP(heroi.getPvAtual(), heroi.getPvMax())); 
-                    System.out.println(heroi.toStringXP());
-                    System.out.println(barraPVXP(heroi.getXpAtual(), heroi.getXpMax()));
-                    System.out.println(heroi.toStringAtributos());
-                    enterContinua();
-                default:
-                    break;
-            }
-        } while (op != 0);
+            estagio_escolhido = opcao(" > ", 6);
+        } while (estagio_escolhido != 0);
     }
 
     public static void iniciarJogo() 
@@ -194,54 +253,49 @@ public class GameEngine
         do {
             limparConsole();
             printMenuPrincipal();
-            op = opcao(" > ",4);
+            op = opcao(" > ",novojogo ? 3 : 4);
             switch (op) {
                 case 1: //Novo Jogo/Continuar
                     int op1;
                     if (novojogo == true) {
                         do {
-
                             limparConsole();
-                            cabecalho("Qual é o nome do Herói?", 46);
-                            System.out.print("> ");
+                            cabecalho("Qual é o nome do Herói?", 6);
+                            System.out.print(" > ");
                             heroi = new Heroi(scanner.next()); 
-                            //heroi = new Heroi("Herói", 5, 10, 2, 7, 1);
 
-                            cabecalho("O nome do Herói é "+heroi.getNome()+". Correto?", 46);
+                            cabecalho("O nome do Herói é "+heroi.getNome()+". Correto?", 6);
                             System.out.println(" 1) Sim!\n 0) Não, quero renomear o Herói.");
                             op1 = opcao(" > ",2);
-                            
                         } while (op1 != 1);
                     }
                     novojogo = false;
-                    estagios(1);
+                    localHeroi(heroi.getEstagioAtual());
                     break;
-                case 2: //Salvar
-                    limparConsole();
-                    if(HeroiData.salvar(heroi)) 
-                        cabecalho("Dados do Herói salvos!", 36);
-                    else 
-                        cabecalho("Ocorreu um erro!\n", 36);
-                    enterContinua();
-                    break;
-                case 3: //Carregar
+                case 2: //Carregar
                     limparConsole();
                     heroi = HeroiData.carregar();
                     if(heroi != null) {
-                        cabecalho("Dados do Herói carregados!", 6);
-                        System.out.println(heroi.toStringPV());
-                        System.out.println(barraPVXP(heroi.getPvAtual(), heroi.getPvMax())); 
-                        System.out.println(heroi.toStringXP());
-                        System.out.println(barraPVXP(heroi.getXpAtual(), heroi.getXpMax()));
-                        System.out.println(heroi.toStringAtributos());
-                        separador(6);
+                        limparConsole();
+                        printStatus("Dados do Herói carregados!");
                         novojogo = false;
                     }
                     else 
-                        cabecalho("Ocorreu um erro!", 36);
+                        cabecalho("Não há dados do Herói salvos!", 6);
+        
                     enterContinua();
                     break;
-                case 4:
+                case 3: //Salvar
+                    if (novojogo == false) {
+                        limparConsole();
+                        if(HeroiData.salvar(heroi)) 
+                            cabecalho("Dados do Herói salvos!", 6);
+                        else 
+                            cabecalho("Ocorreu um erro!\n", 6);
+                        enterContinua();
+                        break;
+                    }
+                case 4: //Sair
                     limparConsole();
                     cabecalho("Como Jogar", 6);
                     System.out.println(" Para jogar primeiramente é preciso criar seu Herói:");

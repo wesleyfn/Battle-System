@@ -7,8 +7,5 @@ public class Inimigo extends Character
         this.xp = xp;
     }
 
-    public int attack() {
-        return atk;
-    }
-    
+    public int getXP() { return xp; }
 }
