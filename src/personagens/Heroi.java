@@ -70,8 +70,8 @@ public class Heroi extends Character
         xp += add;
         if (xp >= xpMax) {
             xp = xp - xpMax;
-            xpMax = Math.round(xpMax * 2.2f);
-            pvMax = Math.round(pvMax * 1.5f);
+            xpMax = Math.round(xpMax * 2.1f);
+            pvMax = Math.round(pvMax * 1.4f);
             atk = Math.round(atk * 1.6f);
             def = Math.round(def * 1.6f);
             nivel++;

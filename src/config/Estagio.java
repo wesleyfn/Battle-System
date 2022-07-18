@@ -31,11 +31,11 @@ public class Estagio
     };
     private String[] bossInimigos = {
         " ",
-        "Goblin Chefe", 
-        "Salazar - O Necromante", 
-        "Davy Jones - O Dominador", 
+        "O Chefe Goblin", 
+        "Salazar, O Necromante", 
+        "Davy Jones, O Dominador", 
         "Gugrok, O Rei Orc", 
-        "Sauron - O Senhor do Inferno"
+        "Sauron, O Senhor do Inferno"
     };
 
     private String descricao;
@@ -64,7 +64,7 @@ public class Estagio
                 break;
             case 4:
                 nome = "Labirinto da Perdição";
-                descricao = " \""+heroi.getNome()+ " mantenha o foco, muitos bravos guerreiros se perderam nesse local "+".\n";
+                descricao = " \""+heroi.getNome()+ " mantenha o foco, muitos bravos guerreiros se perderam nesse local.\n";
                 descricao += " Chegar ao final do labirinto não será uma tarefa fácil.\"";
                 iniciarInimigos("Orc", "Orc de Elite");
                 break;

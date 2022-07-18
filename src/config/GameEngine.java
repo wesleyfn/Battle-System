@@ -164,6 +164,7 @@ public class GameEngine {
                             limparConsole();
                             cabecalho("Parabéns " + heroi.getNome() + "," + " o seu ápice foi alcançado!", 6);
                             System.out.println(" \""+heroi.getNome()+" utilizou a fogueira "+contadorFogueira+" vezes.\"");
+                            separador(6);
                             enterContinua();    
                         }
                         else{
@@ -379,11 +380,15 @@ public class GameEngine {
                     }
                 case 4: // Sair
                     limparConsole();
-                    cabecalho("Como Jogar", 6);
-                    System.out.println(" Para jogar primeiramente é preciso criar seu Herói:");
-                    System.out.println("  - Em \"Novo Jogo\" será possível criar seu Herói.");
-                    System.out.println("  - Se já tiver algum Herói guardado, em \"Carregar\" poderá recuperá-lo.");
-                    separador(6);
+                    cabecalho("Como Jogar", 10);
+                    System.out.println("  - Em Novo Jogo será possível criar seu Herói.");
+                    System.out.println("  - Se já tiver algum Herói guardado, em Carregar poderá recuperá-lo.");
+                    System.out.println("  - Utilize o mapa Fogueira para recuperar vida e recarregar a poção.");
+                    System.out.println("  - Se o seu personagem morrer, o progresso do estagio será perdido.");
+                    System.out.println("  - Ao selecionar a opção Correr, se obter sucesso, o heroi avança.");
+                    System.out.println("  - Os chefes estão no final de cada estágio, derrote-os para adquirir novos itens.");
+                    System.out.println("  - O objetivo é chegar ao final com a menor quantidade de usos da Fogueira.");
+                    separador(10);
                     enterContinua();
                     break;
                 default:
