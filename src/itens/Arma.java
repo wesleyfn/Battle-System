@@ -8,6 +8,11 @@ public class Arma extends Itens
         this.atributo = atk;
     }
 
+    public void setArma(String nome, int atributo) {
+        this.nome = nome;
+        this.atributo = atributo;
+    }
+
     public int getAtk() {
         return atributo;
     }

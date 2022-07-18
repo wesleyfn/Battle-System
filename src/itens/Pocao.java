@@ -8,11 +8,18 @@ public class Pocao extends Itens
      * 'G': 60
      * @param tamanho 
      */
-    public Pocao(char tamanho) 
+    private char tamanho;
+
+    public Pocao() 
     {
         nome = "Poção";
         quantidade = 0; //A poção possui 3 usos
+        atributo = 10;
+        tamanho = 'P';
+    }
 
+    public void setPocao (char tamanho){
+        this.tamanho = tamanho;
         switch (tamanho) {
             case 'P':
                 atributo = 10;
@@ -65,7 +72,7 @@ public class Pocao extends Itens
                 estado = "Vazia";
                 break;
         }
-        return String.format("%s(%s)", nome, estado);
+        return String.format("%s %c(%s)", nome, tamanho, estado);
     }
 
 }

@@ -8,6 +8,11 @@ public class Armadura extends Itens
         this.atributo = def;
     }
 
+    public void setArmadura(String nome, int atributo) {
+        this.nome = nome;
+        this.atributo = atributo;
+    }
+
     public int getDef() {
         return atributo;
     }

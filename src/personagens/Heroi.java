@@ -15,10 +15,10 @@ public class Heroi extends Character
     private List<Itens> inventario = new ArrayList<Itens>();
 
     public Heroi(String nome) {
-        this(nome, 10, 1, 1);
+        this(nome, 15, 3, 2);
     }
 
-    public Heroi(String nome, int pv, int atk, int def) 
+    private Heroi(String nome, int pv, int atk, int def) 
     {
         super(nome, pv, atk, def);
         this.xp = 0;
@@ -27,12 +27,9 @@ public class Heroi extends Character
         distancia = 1;
         estagioAtual = 1;
 
-        inventario.add(new Arma("Faca", 2));
-        inventario.add(new Armadura("Farrapos", 1));
-        inventario.add(new Pocao('P'));
-
-        this.atk += ((Arma) inventario.get(0)).getAtk();
-        this.def += ((Armadura) inventario.get(1)).getDef();
+        inventario.add(new Arma("Adaga", 1));
+        inventario.add(new Armadura("Couraça", 1));
+        inventario.add(new Pocao());
     }
 
     public int getXpAtual() { return xp; }
@@ -40,6 +37,26 @@ public class Heroi extends Character
     public int getDistancia() { return distancia; }
     public int getEstagioAtual() { return estagioAtual; }
     public List<Itens> getInventario() { return inventario; }
+
+    public void addArma (String nome, int atributo){
+        ((Arma) inventario.get(0)).setArma(nome, atributo);
+    }
+
+    public void addArmadura (String nome, int atributo){
+        ((Armadura) inventario.get(1)).setArmadura(nome, atributo);
+    }
+
+    public void addPocao (char tamanho){
+        ((Pocao) inventario.get(2)).setPocao(tamanho);
+    }
+
+    public int ataque() {
+        return atk + ((Arma) inventario.get(0)).getAtk();
+    }
+
+    public int defesa() {
+        return def + ((Armadura) inventario.get(1)).getDef();
+    }
 
     public void setEstagioAtual(int estagioAtual) {
         this.estagioAtual = estagioAtual;
@@ -55,7 +72,11 @@ public class Heroi extends Character
             xp = xp - xpMax;
             xpMax = Math.round(xpMax * 2.2f);
             pvMax = Math.round(pvMax * 1.5f);
+            atk = Math.round(atk * 1.6f);
+            def = Math.round(def * 1.6f);
             nivel++;
+            System.out.println(" \"Parabéns Você Ficou Mais forte!");
+            System.out.println(" Seu nível agora é: "+nivel+"\"\n");
         }
     }
 
@@ -88,6 +109,8 @@ public class Heroi extends Character
 
     //mostra os atributos
     public String toStringAtributos() {
-        return " ATK: "+atk+" DEF: "+def;
+        return " ATK: "+ataque()+" DEF: "+defesa();
     }
+
+
 }
