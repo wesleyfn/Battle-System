@@ -22,10 +22,10 @@ public class Pocao extends Itens
         this.tamanho = tamanho;
         switch (tamanho) {
             case 'P':
-                atributo = 10;
+                atributo = 15;
                 break;
             case 'M':
-                atributo = 25;
+                atributo = 30;
                 break;
             case 'G':
                 atributo = 60;

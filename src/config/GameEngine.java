@@ -7,19 +7,26 @@ import personagens.Heroi;
 import personagens.HeroiData;
 import personagens.Inimigo;
 
-public class GameEngine {
+public class GameEngine 
+{
+    private static int contadorFogueira = 0;
+    private static boolean novojogo = true;
+
     private static Heroi heroi;
     private static Estagio estagio;
-    private static boolean novojogo = true;
     private static Scanner scanner = new Scanner(System.in);
-    private static int contadorFogueira = 0;
 
-    public static void cabecalho(String titulo, int n_separador) {
+    private static int rolagemDado(int lados) {
+        return 1 + (int) (Math.random() * lados);
+    }
+
+    /* Métodos para formatação de menus */
+    private static void cabecalho(String titulo, int n_separador) {
         System.out.println("\n [" + titulo + "]");
         separador(n_separador);
     }
 
-    public static void separador(int n) {
+    private static void separador(int n) {
         for (int i = 0; i < n / 2; i++) {
             System.out.print("-");
             System.out.print("=");
@@ -27,7 +34,7 @@ public class GameEngine {
         System.out.println("-");
     }
 
-    public static void printMenuPrincipal() {
+    private static void printMenuPrincipal() {
         cabecalho("RPG", 6);
         System.out.format(" 1) %s", novojogo ? "Novo Jogo\n" : "Continuar\n");
         System.out.print(" 2) Carregar");
@@ -37,7 +44,7 @@ public class GameEngine {
         separador(6);
     }
 
-    public static void printMenuEstagios() {
+    private static void printMenuEstagios() {
         cabecalho("Escolha um estágio (0 = voltar)", 6);
         System.out.println(" 1) Fogueira");
         System.out.println(" 2) Colinas Verdejantes"); 
@@ -48,15 +55,15 @@ public class GameEngine {
         separador(6);
     }
 
-    public static String barraPVXP(int atual, int max) {
+    private static String barraPVXP(int atual, int max) {
         String barra = "[";
         if (atual == 0)
             barra = "[                                   ";
         else {
             double p = ((max - atual) / (double) atual) + 1;
             for (int i = 0; i < 35; i++) {
-                if (i < Math.floor(35 / p))
-                    barra += "∎";
+                if (i < Math.round(35 / p))
+                    barra += "\u220E"; //∎∎∎
                 else
                     barra += " ";
             }
@@ -76,7 +83,8 @@ public class GameEngine {
         separador(6);
     }
 
-    public static int opcao(String comecoLinha, int escolhas) {
+    /* Método para controlar a entrada do teclado (evitar erros) */
+    private static int opcao(String comecoLinha, int escolhas) {
         int op_escolhida;
         do {
             System.out.print(comecoLinha);
@@ -89,13 +97,13 @@ public class GameEngine {
         return op_escolhida;
     }
 
-    public static void limparConsole() {
+    private static void limparConsole() {
         for (int i = 0; i < 100; i++) {
             System.out.println();
         }
     }
 
-    public static void enterContinua() {
+    private static void enterContinua() {
         System.out.print("> Enter para continuar... ");
         try {
             System.in.read();
@@ -103,6 +111,7 @@ public class GameEngine {
         }
     }
 
+    /* Método responsável pelo sistema de batalha */
     private static void batalha(Inimigo inimigo) {
         int op;
         limparConsole();
@@ -120,8 +129,7 @@ public class GameEngine {
 
             limparConsole();
             if (op == 0) {
-                int moeda = (int) (Math.random() * 5);
-                if (moeda == 0) {
+                if (rolagemDado(5) == 1) {
                     cabecalho(estagio.getSubstagio(heroi.getEstagioAtual()-1, heroi.getDistancia()-1), 6);
                     System.out.println("\"" + heroi.getNome() + " fugiu covardemente...\"");
                     separador(6);
@@ -142,8 +150,8 @@ public class GameEngine {
                 }
             }
             else if (op == 1) {
-                int ataqueHeroi = heroi.ataque(); 
-                int ataqueInimigo = inimigo.ataque();
+                int ataqueHeroi = (heroi.ataque()/2) + (int) (Math.random()*heroi.ataque()); 
+                int ataqueInimigo = (inimigo.ataque()/2) + (int) (Math.random()*inimigo.ataque());
 
                 inimigo.subtrairPv(ataqueHeroi - inimigo.getDef());
                 heroi.subtrairPv(ataqueInimigo - heroi.defesa());
@@ -157,8 +165,8 @@ public class GameEngine {
                     heroi.setEstagioAtual(1);
                     cabecalho(heroi.getNome()+" morreu em batalha...", 6);
                 }
-                else if (inimigo.getPvAtual() < 1) {
-
+                else if (inimigo.getPvAtual() < 1) 
+                {
                     if (heroi.getDistancia() == 6){
                         if (heroi.getEstagioAtual() == 6){
                             limparConsole();
@@ -195,12 +203,12 @@ public class GameEngine {
         } while (heroi.getPvAtual() > 0 && inimigo.getPvAtual() > 0);
     }
 
-    public static void gerarEncontro() {
+    private static void gerarEncontro() {
         int op;
         limparConsole();
         cabecalho(estagio.getSubstagio(heroi.getEstagioAtual()-2, heroi.getDistancia()-1), 6);
         do {
-            int ramdomNumber = (int) (Math.random()*5);
+            int ramdomNumber = rolagemDado(5)-1;
             String nomeInimigo = estagio.getInimigo(ramdomNumber);
             System.out.println("\"" + heroi.getNome() + " encontrou "+nomeInimigo+". Derrote-a Herói!\"");
             separador(6);
@@ -224,8 +232,7 @@ public class GameEngine {
             } 
             else if (op == 2) {
                 limparConsole();
-                int moeda = (int) (Math.random()*2);
-                if (moeda == 0) {
+                if (rolagemDado(2) == 1) {
                     cabecalho(estagio.getSubstagio(heroi.getEstagioAtual()-1, heroi.getDistancia()-1), 6);
                     System.out.println("\"" + heroi.getNome() + " fugiu covardemente...\"");
                     separador(6);
@@ -243,16 +250,14 @@ public class GameEngine {
         } while (op != 1 && op != 2 && heroi.getPvAtual() > 0);
     }
 
-    private static void menuEstagio(int estagio_escolhido) {
+    private static void menuEstagio() {
         int op;
         do {
-            String isFogueira = estagio_escolhido != 1 ? estagio.getNome() : "Fogueira, usos: "+contadorFogueira;
             limparConsole();
-            
-            estagio = new Estagio(estagio_escolhido, heroi);
+            estagio = new Estagio(heroi.getEstagioAtual(), heroi);
 
-
-            cabecalho(isFogueira, 6);
+            String nomeEstágio = heroi.getEstagioAtual() != 1 ? estagio.getNome() : "Fogueira, usos: "+contadorFogueira;
+            cabecalho(nomeEstágio, 6);
             System.out.println(estagio.getDescricao());
 
             separador(6);
@@ -260,9 +265,9 @@ public class GameEngine {
             op = opcao(": ", 2);
                 
             if (op == 1) {
-                if (estagio_escolhido == 1) {
+                if (heroi.getEstagioAtual() == 1) {
                     limparConsole();
-                    cabecalho(estagio.getNome(), 6);
+                    cabecalho(estagio.getNome()+", usos: "+contadorFogueira, 6);
                     System.out.println(" \"" + heroi.getNome() + " anda ao redor da fogueira, por algum motivo.\"");
                     separador(6);
                     enterContinua();
@@ -283,15 +288,15 @@ public class GameEngine {
         } while (op != 0 && heroi.getPvAtual() > 0);
     }
 
-    public static void localHeroi(int estagio_escolhido) {
+    private static void localHeroi(int estagio_escolhido) {
         int estagioAnterior = 1;
         do {    
             switch (estagio_escolhido) {
                 case 1: // Fogueira
-                    heroi.encherPotion();
+                    heroi.encherPocao();
                     heroi.adicionarPv(heroi.getPvMax());
                     contadorFogueira++;
-                    menuEstagio(estagio_escolhido);
+                    menuEstagio();
                     break;
                 case 2:
                 case 3:
@@ -301,7 +306,7 @@ public class GameEngine {
                     if (estagioAnterior != estagio_escolhido){
                         heroi.reiniciarDistancia();
                     }
-                    menuEstagio(estagio_escolhido);
+                    menuEstagio();
                     break;
                 default:
                     break;
@@ -339,9 +344,9 @@ public class GameEngine {
                             String nomeHeroi = scanner.next();
                             heroi = new Heroi(nomeHeroi);
                             if (nomeHeroi.compareTo("MOOD007") == 0){
-                                heroi.addArma("Espada Milenar", 100);
-                                heroi.addArmadura("Armadura Milenar", 100);
-                                heroi.addPocao('G');
+                                heroi.novaArma("Espada Milenar", 100);
+                                heroi.novaArmadura("Armadura Milenar", 100);
+                                heroi.novaPocao('G');
                             }
                             cabecalho("O nome do Herói é " + heroi.getNome() + ". Correto?", 6);
                             System.out.println(" 1) Sim!\n 0) Não, quero renomear o Herói.");

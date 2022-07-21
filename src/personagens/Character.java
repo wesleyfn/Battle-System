@@ -7,12 +7,12 @@ public abstract class Character implements Serializable
     protected String nome;
     protected int pvAtual, pvMax, xp, atk, def;
 
-    public Character(String nome, int pv, int atk, int def) {
+    public Character(String nome, int pv, int atk, int def, int xp) {
         this.nome = nome;
-        this.pvAtual = pv;
-        this.pvMax = pv;
         this.atk = atk;
         this.def = def;
+        this.xp = xp;
+        pvAtual = pvMax = pv;
     }
 
     public int getDef() { return def; }
@@ -28,7 +28,7 @@ public abstract class Character implements Serializable
     }
 
     public void subtrairPv(int sub) {
-        if (sub <= 0) {
+        if (sub < 1) {
             adicionarPv(-1);
         }
         else {

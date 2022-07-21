@@ -15,13 +15,7 @@ public class Heroi extends Character
     private List<Itens> inventario = new ArrayList<Itens>();
 
     public Heroi(String nome) {
-        this(nome, 15, 3, 2);
-    }
-
-    private Heroi(String nome, int pv, int atk, int def) 
-    {
-        super(nome, pv, atk, def);
-        this.xp = 0;
+        super(nome, 15, 3, 2, 0);
         xpMax = 10;
         nivel = 1;
         distancia = 1;
@@ -38,15 +32,19 @@ public class Heroi extends Character
     public int getEstagioAtual() { return estagioAtual; }
     public List<Itens> getInventario() { return inventario; }
 
-    public void addArma (String nome, int atributo){
+    public void setEstagioAtual(int estagioAtual) {
+        this.estagioAtual = estagioAtual;
+    }
+
+    public void novaArma(String nome, int atributo){
         ((Arma) inventario.get(0)).setArma(nome, atributo);
     }
 
-    public void addArmadura (String nome, int atributo){
+    public void novaArmadura(String nome, int atributo){
         ((Armadura) inventario.get(1)).setArmadura(nome, atributo);
     }
 
-    public void addPocao (char tamanho){
+    public void novaPocao(char tamanho){
         ((Pocao) inventario.get(2)).setPocao(tamanho);
     }
 
@@ -58,34 +56,31 @@ public class Heroi extends Character
         return def + ((Armadura) inventario.get(1)).getDef();
     }
 
-    public void setEstagioAtual(int estagioAtual) {
-        this.estagioAtual = estagioAtual;
-    }
-
     public void reiniciarDistancia() {
         this.distancia = 0;
     }
 
-    public void adicionarXp(int add) {
-        xp += add;
-        if (xp >= xpMax) {
-            xp = xp - xpMax;
-            xpMax = Math.round(xpMax * 2.1f);
-            pvMax = Math.round(pvMax * 1.4f);
-            atk = Math.round(atk * 1.6f);
-            def = Math.round(def * 1.6f);
-            nivel++;
-            System.out.println(" \"Parabéns Você Ficou Mais forte!");
-            System.out.println(" Seu nível agora é: "+nivel+"\"\n");
-        }
+    public void encherPocao() {
+        ((Pocao) inventario.get(2)).setQuantidade(3);
     }
 
     public void movimentar() {
         distancia++;
     }
 
-    public void encherPotion() {
-        ((Pocao) inventario.get(2)).setQuantidade(3);
+    public void adicionarXp(int add) {
+        xp += add;
+        if (xp >= xpMax) {
+            nivel++;
+            xp = xp - xpMax;
+            xpMax = Math.round(xpMax * 2.0f);
+            pvMax = Math.round(pvMax * 1.2f);
+            if (nivel%2 == 0) {
+                atk++;
+                def++;
+            }
+            System.out.println(" \"Seu nível agora é: "+nivel+"\"\n");
+        }
     }
 
     public String toStringInventario() {
@@ -111,6 +106,4 @@ public class Heroi extends Character
     public String toStringAtributos() {
         return " ATK: "+ataque()+" DEF: "+defesa();
     }
-
-
 }

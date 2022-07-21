@@ -1,4 +1,4 @@
-## Text RPG...
+## Text RPG
 
 - Em Novo Jogo será possível criar seu Herói.
 - Se já tiver algum Herói guardado, em Carregar poderá recuperá-lo.
