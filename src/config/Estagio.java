@@ -4,16 +4,7 @@ import personagens.Heroi;
 
 public class Estagio
 {
-    /*private String[] nome = {
-        "Fogueira", 
-        "Colinas Verdejantes", 
-        "Floresta Sempre Noturna", 
-        "Labirinto da Perdição", 
-        "Deserto Não Verdejante", 
-        "Caverna Ossos Vívidos"
-    };*/
     private String nome;
-
     private String[][] subStagios = {
         {"Serpentes Venenosas", "Entrada da Caverna", "Águas Passadas", "Rio das Piranhas", "Mina Secreta", "Esconderijo Dos Goblins" }, 
         {"Arvores Fantasma", "Correntes Instáveis", "Planicie Seca", "Abismo", "Tempestade Eterna", "Torre dos Mortos Vivos"},
@@ -21,7 +12,6 @@ public class Estagio
         {"Monte Tsereve", "Base da Montanha", "Floresta da Montanha", "Oasis", "Cidade das Nuvens", "Castelo do Rei Orc",},
         {"Highway to Hell", "Deserto das Almas Perdidas", "Cachoeira de Sangue", "Gruta Demoniaca", "Salão dos Demônios", "Trono do Capeta"}
     };
-
     private String[] inimigos = {
         "Goblin", 
         "Goblin", 
@@ -31,7 +21,7 @@ public class Estagio
     };
     private String[] bossInimigos = {
         " ",
-        "O Chefe Goblin", 
+        "Chefe Goblin", 
         "Salazar, O Necromante", 
         "Davy Jones, O Dominador", 
         "Gugrok, O Rei Orc", 
@@ -64,14 +54,14 @@ public class Estagio
                 break;
             case 4:
                 nome = "Labirinto da Perdição";
-                descricao = " \""+heroi.getNome()+ " mantenha o foco, muitos bravos guerreiros se perderam nesse local.\n";
+                descricao = " \""+heroi.getNome()+" mantenha o foco, muitos bravos guerreiros se perderam nesse local.\n";
                 descricao += " Chegar ao final do labirinto não será uma tarefa fácil.\"";
                 iniciarInimigos("Orc", "Orc de Elite");
                 break;
             case 5:
                 nome = "Deserto Não Verdejante";
-                descricao = " \"Um horizonte seco e vazio, espera... vazio?"+".\n";
-                descricao += heroi.getNome() + " Não baixe a guarda, o perigo pode estar por perto!\"";
+                descricao = " \"Um horizonte seco e vazio, espera... vazio?"+".\n  ";
+                descricao += heroi.getNome()+" não baixe a guarda, o perigo pode estar perto!\"";
                 iniciarInimigos("Harpia", "Minotauro");
                 break;
             case 6:
@@ -105,40 +95,34 @@ public class Estagio
     
     public void dropBoss(Heroi heroi) {
         int moeda = (int) (Math.random()*2);
-        switch (heroi.getEstagioAtual()) {
-            case 1:
-                if (moeda == 1) {
-                    heroi.addArma("Espada Longa", 5);
-                    heroi.addArmadura("Couraça", 5);
-                }
-                break;
-            case 2:
-                if (moeda == 1) {
-                    heroi.addArma("Cimitarra", 10);
-                    heroi.addArmadura("Armadura de Ferro", 10);
-                }
-                    heroi.addPocao('M');
-                break;
-            case 3:
-                if (moeda == 1) {
-                    heroi.addArma("Espada Ferro Vermelho", 20);
-                    heroi.addArmadura("Armadura Escama do Dragão", 20);
+
+        if (moeda == 1) {
+            switch (heroi.getEstagioAtual()) {
+                case 2:
+                    heroi.novaArma("Espada Longa", 5);
+                    heroi.novaArmadura("Couraça", 3);
                     break;
-                }
-            case 4:
-                if (moeda == 1) {
-                    heroi.addArma("Espada da Lua Cheia", 30);
-                    heroi.addArmadura("Armadura Aço Nego", 30);
-                }
-                break;
-            case 5:
-                if (moeda == 1) {
-                    heroi.addArma("Espada Rúnica", 50);
-                    heroi.addArmadura("Armadura Rúnica", 50);
-                }
-                heroi.addPocao('G');
-            default:
-                break;
+                case 3:
+                    heroi.novaArma("Cimitarra", 8);
+                    heroi.novaArmadura("Armadura de Ferro", 5);
+                    heroi.novaPocao('M');
+                    break;
+                case 4:
+                    heroi.novaArma("Espada Ferro Vermelho", 10);
+                    heroi.novaArmadura("Armadura Escama do Dragão", 7);
+                    break;
+                case 5:
+                    heroi.novaArma("Espada da Lua Cheia", 12);
+                    heroi.novaArmadura("Armadura Aço Negro", 9);
+                    break;
+                case 6:
+                    heroi.novaArma("Espada Rúnica", 15);
+                    heroi.novaArmadura("Armadura Rúnica", 12);
+                    heroi.novaPocao('G');
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
